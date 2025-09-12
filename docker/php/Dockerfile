@@ -24,6 +24,10 @@ ENV LANG ko_KR.UTF-8
 ENV LANGUAGE ko_KR:ko
 ENV LC_ALL ko_KR.UTF-8
 
+# Node.js 20.x LTS 설치
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
 # PHP 확장 모듈 설치 (Laravel에 필요한 것들)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
