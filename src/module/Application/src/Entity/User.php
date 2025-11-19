@@ -12,7 +12,7 @@ use DateTime;
 /**
  * 관리자 사용자 엔티티
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \Application\Repository\UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ORM\HasLifecycleCallbacks]
 class User

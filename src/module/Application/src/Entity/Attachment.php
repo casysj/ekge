@@ -10,7 +10,7 @@ use DateTime;
 /**
  * 첨부파일 엔티티
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \Application\Repository\AttachmentRepository::class)]
 #[ORM\Table(name: 'attachments')]
 #[ORM\Index(columns: ['post_id'], name: 'idx_post_id')]
 class Attachment

@@ -12,7 +12,7 @@ use DateTime;
 /**
  * 메뉴 구조 엔티티
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \Application\Repository\MenuRepository::class)]
 #[ORM\Table(name: 'menus')]
 #[ORM\Index(columns: ['parent_id'], name: 'idx_parent_id')]
 #[ORM\HasLifecycleCallbacks]

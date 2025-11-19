@@ -12,7 +12,7 @@ use DateTime;
 /**
  * 게시글 엔티티
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \Application\Repository\PostRepository::class)]
 #[ORM\Table(name: 'posts')]
 #[ORM\Index(columns: ['board_id', 'isNotice', 'isPublished', 'publishedAt', 'createdAt'], name: 'idx_board_publish')]
 #[ORM\Index(columns: ['title', 'content'], name: 'idx_fulltext', flags: ['fulltext'])]

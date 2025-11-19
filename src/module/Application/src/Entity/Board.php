@@ -12,7 +12,7 @@ use DateTime;
 /**
  * 게시판 종류 엔티티
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \Application\Repository\BoardRepository::class)]
 #[ORM\Table(name: 'boards')]
 #[ORM\HasLifecycleCallbacks]
 class Board

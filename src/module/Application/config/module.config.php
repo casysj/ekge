@@ -42,12 +42,53 @@ return [
                     ],
                 ],
             ],
+            // API 라우트
+            'api-boards' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/boards',
+                    'defaults' => [
+                        'controller' => Controller\BoardController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'api-board-posts' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/boards/:code/posts',
+                    'defaults' => [
+                        'controller' => Controller\BoardController::class,
+                        'action'     => 'list',
+                    ],
+                ],
+            ],
+            'api-post-view' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/posts/:id',
+                    'defaults' => [
+                        'controller' => Controller\BoardController::class,
+                        'action'     => 'view',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\TestController::class => ReflectionBasedAbstractFactory::class,
+            Controller\BoardController::class => Controller\Factory\BoardControllerFactory::class,
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
+            Service\BoardService::class => Service\Factory\BoardServiceFactory::class,
+            Service\PostService::class => Service\Factory\PostServiceFactory::class,
         ],
     ],
     'view_manager' => [
