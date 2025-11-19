@@ -76,6 +76,104 @@ return [
                     ],
                 ],
             ],
+            // 메뉴 API
+            'api-menus' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/menus',
+                    'defaults' => [
+                        'controller' => Controller\MenuController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'api-menu-view' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/menus/:id',
+                    'defaults' => [
+                        'controller' => Controller\MenuController::class,
+                        'action'     => 'view',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
+            // 관리자 API
+            'api-admin-login' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/login',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'login',
+                    ],
+                ],
+            ],
+            'api-admin-logout' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/logout',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'logout',
+                    ],
+                ],
+            ],
+            'api-admin-me' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/me',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'me',
+                    ],
+                ],
+            ],
+            'api-admin-posts-create' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/posts',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'createPost',
+                    ],
+                ],
+            ],
+            'api-admin-posts-update' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/admin/posts/:id',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'updatePost',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
+            'api-admin-upload' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/upload',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'upload',
+                    ],
+                ],
+            ],
+            'api-admin-stats' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/stats',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'stats',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
@@ -83,12 +181,18 @@ return [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\TestController::class => ReflectionBasedAbstractFactory::class,
             Controller\BoardController::class => Controller\Factory\BoardControllerFactory::class,
+            Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
+            Controller\MenuController::class => Controller\Factory\MenuControllerFactory::class,
         ],
     ],
     'service_manager' => [
         'factories' => [
             Service\BoardService::class => Service\Factory\BoardServiceFactory::class,
             Service\PostService::class => Service\Factory\PostServiceFactory::class,
+            Service\AuthenticationService::class => Service\Factory\AuthenticationServiceFactory::class,
+            Service\FileUploadService::class => Service\Factory\FileUploadServiceFactory::class,
+            Service\AttachmentService::class => Service\Factory\AttachmentServiceFactory::class,
+            Service\MenuService::class => Service\Factory\MenuServiceFactory::class,
         ],
     ],
     'view_manager' => [
