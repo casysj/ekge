@@ -6,3 +6,10 @@ config/development.config.php
 data/cache/*
 !data/cache/.gitkeep
 phpunit.xml
+
+# Migration
+bin/migration/migration.config.php
+
+# Uploads
+public/uploads/*
+!public/uploads/.gitkeep
