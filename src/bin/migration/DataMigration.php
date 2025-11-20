@@ -188,7 +188,7 @@ class DataMigration
         $siteCode = $this->config['site_code'];
         $sql = "SELECT bd.*, bm.B_ID
                 FROM BOARD_DTL bd
-                JOIN BOARD_MST bm ON bd.B_SEQ = bm.B_SEQ
+                JOIN BOARD_MST bm ON bd.B_ID = bm.B_ID AND bd.SITE_CODE = bm.SITE_CODE
                 WHERE bm.site_code = :site_code
                 ORDER BY bd.REG_DATE";
         $stmt = $this->sourceDb->prepare($sql);
@@ -218,9 +218,9 @@ class DataMigration
             $post = new Post();
             $post->setBoard($board)
                  ->setTitle($oldPost['TITLE'])
-                 ->setContent($oldPost['CONTENT'])
+                 ->setContent($oldPost['CONT'])
                  ->setAuthorName($oldPost['REG_USER'] ?? '관리자')
-                 ->setViewCount((int) ($oldPost['HIT_CNT'] ?? 0))
+                 ->setViewCount((int) ($oldPost['HIT'] ?? 0))
                  ->setIsNotice(false)
                  ->setIsPublished(true)
                  ->setPublishedAt(new DateTime($oldPost['REG_DATE']));
