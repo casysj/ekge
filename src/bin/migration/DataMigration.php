@@ -282,20 +282,21 @@ class DataMigration
     {
         echo "🖼️  배너 마이그레이션 중...\n";
 
-        $sql = "SELECT * FROM MAIN_BANNER ORDER BY SORT_SEQ";
+        $siteCode = $this->config['site_code'];
+        $sql = "SELECT * FROM MAIN_BANNER WHERE SITE_CODE = :site_code ORDER BY ORDER_NUM";
         $stmt = $this->sourceDb->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(['site_code' => $siteCode]);
         $oldBanners = $stmt->fetchAll();
 
         $count = 0;
 
         foreach ($oldBanners as $oldBanner) {
             $banner = new Banner();
-            $banner->setTitle($oldBanner['BANNER_TITLE'] ?? '배너')
+            $banner->setTitle($oldBanner['TITLE'] ?? '배너')
                    ->setImagePath($oldBanner['IMG_PATH'])
-                   ->setLinkUrl($oldBanner['LINK_URL'] ?? null)
-                   ->setDisplayOrder((int) $oldBanner['SORT_SEQ'])
-                   ->setIsActive(true);
+                   ->setLinkUrl(null)  // 구 DB에 LINK_URL 없음
+                   ->setDisplayOrder((int) ($oldBanner['ORDER_NUM'] ?? 0))
+                   ->setIsActive($oldBanner['USE_YN'] === 'Y');
 
             if (!$this->config['options']['dry_run']) {
                 $this->em->persist($banner);
