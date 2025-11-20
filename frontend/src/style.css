@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for EKGE Church Website */
+@layer base {
+  body {
+    @apply font-sans antialiased text-gray-900 bg-gray-50;
+  }
+}
+
+@layer components {
+  /* Header styles */
+  .header-green {
+    background: linear-gradient(135deg, #2d7a4e 0%, #16a34a 100%);
+  }
+
+  /* Card styles */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply bg-church-green-500 text-white px-6 py-2 rounded-lg hover:bg-church-green-600 transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-church-light-500 text-white px-6 py-2 rounded-lg hover:bg-church-light-600 transition-colors duration-200;
+  }
+}
