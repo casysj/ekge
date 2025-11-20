@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuth } from '../composables/useAuth'
 
 const routes = [
   {
@@ -31,6 +32,52 @@ const routes = [
     component: () => import('../views/About.vue'),
     meta: { title: '교회소개' }
   },
+
+  // 관리자 로그인 (인증 불필요)
+  {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('../views/admin/Login.vue'),
+    meta: { title: '관리자 로그인' }
+  },
+
+  // 관리자 페이지 (인증 필요)
+  {
+    path: '/admin',
+    component: () => import('../layouts/AdminLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        redirect: '/admin/dashboard'
+      },
+      {
+        path: 'dashboard',
+        name: 'AdminDashboard',
+        component: () => import('../views/admin/Dashboard.vue'),
+        meta: { title: '관리자 대시보드' }
+      },
+      {
+        path: 'posts',
+        name: 'AdminPosts',
+        component: () => import('../views/admin/PostList.vue'),
+        meta: { title: '게시글 관리' }
+      },
+      {
+        path: 'posts/create',
+        name: 'AdminPostCreate',
+        component: () => import('../views/admin/PostForm.vue'),
+        meta: { title: '게시글 작성' }
+      },
+      {
+        path: 'posts/:id/edit',
+        name: 'AdminPostEdit',
+        component: () => import('../views/admin/PostForm.vue'),
+        meta: { title: '게시글 수정' }
+      }
+    ]
+  },
+
   // 404 페이지
   {
     path: '/:pathMatch(.*)*',
@@ -53,10 +100,25 @@ const router = createRouter({
   }
 })
 
-// 페이지 타이틀 설정
-router.beforeEach((to, from, next) => {
+// 인증 가드
+router.beforeEach(async (to, from, next) => {
+  // 페이지 타이틀 설정
   document.title = to.meta.title || '에센 한인교회'
-  next()
+
+  // 인증이 필요한 페이지인지 확인
+  if (to.meta.requiresAuth) {
+    const { checkAuth } = useAuth()
+    const isAuthenticated = await checkAuth()
+
+    if (!isAuthenticated) {
+      // 인증되지 않았으면 로그인 페이지로
+      next('/admin/login')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
