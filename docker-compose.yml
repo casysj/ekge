@@ -74,6 +74,25 @@ services:
     depends_on:
       - mariadb
 
+  # Frontend (Vue.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ekge_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules  # node_modules는 컨테이너 내부 것 사용
+    environment:
+      - VITE_API_URL=http://dev.local:8080/api
+    networks:
+      - ekge_network
+    depends_on:
+      - nginx
+
 networks:
   ekge_network:
     driver: bridge
