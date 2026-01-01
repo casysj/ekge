@@ -78,7 +78,7 @@ const loadPost = async () => {
 
   try {
     const response = await boardService.getPost(postId.value)
-    post.value = response.data
+    post.value = response.data.post // API 응답 구조에 맞게 수정
   } catch (err) {
     console.error('Error loading post:', err)
     error.value = '게시글을 불러오는 중 오류가 발생했습니다.'
