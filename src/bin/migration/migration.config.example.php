@@ -12,11 +12,11 @@ declare(strict_types=1);
 return [
     // 구 DB 연결 정보 (마이그레이션 소스)
     'source_db' => [
-        'host'     => 'localhost',
+        'host'     => 'mariadb',  // Docker 컨테이너명
         'port'     => 3306,
         'dbname'   => 'Backup_ekge',  // 구 DB 이름
         'user'     => 'root',
-        'password' => 'your_password',
+        'password' => 'root_password_change_this',
         'charset'  => 'utf8mb4',
     ],
 
