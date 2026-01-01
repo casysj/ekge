@@ -31,6 +31,14 @@ class BoardService
     }
 
     /**
+     * 게시판 ID로 조회
+     */
+    public function getBoardById(int $id): ?Board
+    {
+        return $this->boardRepository->find($id);
+    }
+
+    /**
      * 보이는 게시판 목록
      * @return Board[]
      */
