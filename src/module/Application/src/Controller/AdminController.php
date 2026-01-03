@@ -130,8 +130,17 @@ class AdminController extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $data = json_decode($this->getRequest()->getContent(), true);
 
-            $boardCode = $data['boardCode'] ?? '';
-            $board = $this->boardService->getBoardByCode($boardCode);
+            // boardCode 또는 board_id로 게시판 찾기
+            if (isset($data['boardCode'])) {
+                $board = $this->boardService->getBoardByCode($data['boardCode']);
+            } elseif (isset($data['board_id'])) {
+                $board = $this->boardService->getBoardById((int) $data['board_id']);
+            } else {
+                return new JsonModel([
+                    'success' => false,
+                    'message' => '게시판 정보가 필요합니다.',
+                ]);
+            }
 
             if (!$board) {
                 return new JsonModel([

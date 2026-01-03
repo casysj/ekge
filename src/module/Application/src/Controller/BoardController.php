@@ -53,6 +53,7 @@ class BoardController extends AbstractActionController
     {
         $boardCode = $this->params()->fromRoute('code');
         $page = (int) $this->params()->fromQuery('page', 1);
+        $limit = (int) $this->params()->fromQuery('limit', 0); // 0 = 기본값 사용
         $keyword = $this->params()->fromQuery('keyword', '');
 
         $board = $this->boardService->getBoardByCode($boardCode);
@@ -66,9 +67,9 @@ class BoardController extends AbstractActionController
 
         // 검색어가 있으면 검색, 없으면 목록 조회
         if ($keyword) {
-            $result = $this->postService->searchPosts($board, $keyword, $page);
+            $result = $this->postService->searchPosts($board, $keyword, $page, $limit);
         } else {
-            $result = $this->postService->getPostsByBoard($board, $page);
+            $result = $this->postService->getPostsByBoard($board, $page, $limit);
         }
 
         return new JsonModel([

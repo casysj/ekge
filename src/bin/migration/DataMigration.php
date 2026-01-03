@@ -256,12 +256,161 @@ class DataMigration
     {
         echo "📎 첨부파일 마이그레이션 중...\n";
 
-        // 구현 예시 (실제 파일 경로 확인 필요)
-        echo "  ℹ️  첨부파일 마이그레이션은 수동으로 진행하세요.\n";
-        echo "  → 구 파일 경로: {$this->config['source_upload_path']}\n";
-        echo "  → 새 파일 경로: {$this->config['target_upload_path']}\n\n";
+        $siteCode = $this->config['site_code'];
 
-        $this->stats['attachments'] = 0;
+        // 구 첨부파일 조회 (게시판 매핑된 것만)
+        $boardIds = array_keys($this->config['board_mapping']);
+        $boardIdList = "'" . implode("','", $boardIds) . "'";
+
+        $sql = "SELECT attc.*, dtl.TITLE, dtl.REG_DATE, dtl.SEQ as POST_SEQ
+                FROM BOARD_ATTC attc
+                JOIN BOARD_DTL dtl ON attc.B_SEQ = dtl.SEQ
+                    AND attc.B_ID = dtl.B_ID
+                    AND attc.SITE_CODE = dtl.SITE_CODE
+                WHERE attc.SITE_CODE = :site_code
+                AND attc.B_ID IN ({$boardIdList})
+                ORDER BY attc.ATTC_SEQ";
+
+        $stmt = $this->sourceDb->prepare($sql);
+        $stmt->execute(['site_code' => $siteCode]);
+        $oldAttachments = $stmt->fetchAll();
+
+        $count = 0;
+        $skipped = 0;
+
+        echo "  → 총 " . count($oldAttachments) . "개 첨부파일 처리 시작\n";
+
+        foreach ($oldAttachments as $oldAttc) {
+            $bId = $oldAttc['B_ID'];
+            $boardCode = $this->config['board_mapping'][$bId] ?? null;
+
+            if (!$boardCode) {
+                $skipped++;
+                continue;
+            }
+
+            // 게시글 찾기 (제목 + 날짜로 매칭)
+            $title = $oldAttc['TITLE'];
+            $regDate = $oldAttc['REG_DATE'];
+
+            $dql = "SELECT p FROM Application\Entity\Post p
+                    JOIN p.board b
+                    WHERE b.boardCode = :boardCode
+                    AND p.title = :title
+                    AND p.publishedAt = :publishedAt";
+
+            $query = $this->em->createQuery($dql);
+            $query->setParameter('boardCode', $boardCode);
+            $query->setParameter('title', $title);
+            $query->setParameter('publishedAt', new \DateTime($regDate));
+
+            $posts = $query->getResult();
+
+            if (count($posts) === 0) {
+                echo "  ⚠️  게시글 못찾음: {$title} ({$regDate})\n";
+                $skipped++;
+                continue;
+            }
+
+            $post = $posts[0]; // 첫 번째 결과 사용
+
+            // 파일명에서 날짜 추출 (20160211_025354_2.jpg → 2016/20160211)
+            $fileName = $oldAttc['TRS_NM'];
+            $dateStr = substr($fileName, 0, 8); // YYYYMMDD
+            $year = substr($dateStr, 0, 4);
+
+            // 레거시 파일 경로 생성
+            $legacyPath = "upfile/{$year}/{$dateStr}/{$fileName}";
+
+            // 파일 확장자에서 타입 및 MIME 유추
+            $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            $fileType = $this->getFileType($ext);
+            $mimeType = $this->getMimeType($ext);
+
+            // 첨부파일 엔티티 생성
+            $attachment = new Attachment();
+            $attachment->setPost($post)
+                       ->setOriginalName($oldAttc['ORG_NM'])
+                       ->setSavedName($fileName)
+                       ->setFilePath($legacyPath)
+                       ->setFileSize(0) // 실제 파일 없으므로 0
+                       ->setMimeType($mimeType)
+                       ->setFileType($fileType)
+                       ->setImageWidth($oldAttc['IMG_WD'] ? (int)$oldAttc['IMG_WD'] : null)
+                       ->setImageHeight($oldAttc['IMG_HT'] ? (int)$oldAttc['IMG_HT'] : null)
+                       ->setDisplayOrder($count);
+
+            if (!$this->config['options']['dry_run']) {
+                $this->em->persist($attachment);
+
+                // 메모리 관리
+                if ($count % 100 === 0 && $count > 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                    echo "  ... {$count}개 처리됨\n";
+                }
+            }
+
+            $count++;
+        }
+
+        if (!$this->config['options']['dry_run']) {
+            $this->em->flush();
+            $this->em->clear();
+        }
+
+        $this->stats['attachments'] = $count;
+        $this->stats['attachments_skipped'] = $skipped;
+        echo "  완료: {$count}개 첨부파일 ({$skipped}개 건너뜀)\n\n";
+
+        if (!$this->config['options']['dry_run']) {
+            echo "  ℹ️  첨부파일 메타데이터 마이그레이션 완료\n";
+            echo "  ℹ️  실제 파일은 아직 복사되지 않았습니다 (fileSize=0)\n";
+            echo "  ℹ️  파일 경로: upfile/YYYY/YYYYMMDD/*.jpg 형식으로 저장됨\n\n";
+        }
+    }
+
+    /**
+     * 파일 확장자로 파일 타입 결정
+     */
+    private function getFileType(string $ext): string
+    {
+        $imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+        $docExts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+        $videoExts = ['mp4', 'avi', 'mov', 'wmv', 'flv'];
+        $audioExts = ['mp3', 'wav', 'ogg', 'flac'];
+
+        if (in_array($ext, $imageExts)) return 'image';
+        if (in_array($ext, $docExts)) return 'document';
+        if (in_array($ext, $videoExts)) return 'video';
+        if (in_array($ext, $audioExts)) return 'audio';
+
+        return 'other';
+    }
+
+    /**
+     * 파일 확장자로 MIME 타입 결정
+     */
+    private function getMimeType(string $ext): string
+    {
+        $mimeTypes = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            'webp' => 'image/webp',
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'zip' => 'application/zip',
+            'mp4' => 'video/mp4',
+            'mp3' => 'audio/mpeg',
+        ];
+
+        return $mimeTypes[$ext] ?? 'application/octet-stream';
     }
 
     /**

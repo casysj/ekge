@@ -168,9 +168,10 @@ const loadPosts = async () => {
     })
 
     posts.value = response.data.posts || []
-    totalPosts.value = response.data.total || 0
-    totalPages.value = response.data.totalPages || 1
-    postsPerPage.value = response.data.perPage || 20
+    totalPosts.value = response.data.pagination?.total || 0
+    totalPages.value = response.data.pagination?.pages || 1
+    postsPerPage.value = response.data.pagination?.perPage || 20
+    currentPage.value = response.data.pagination?.currentPage || 1
   } catch (err) {
     console.error('Error loading posts:', err)
     error.value = '게시글을 불러오는 중 오류가 발생했습니다.'

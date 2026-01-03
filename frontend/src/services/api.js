@@ -7,6 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
+  withCredentials: true, // 세션 쿠키 전송 활성화
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'

@@ -11,7 +11,9 @@ use Laminas\Mvc\Application;
 chdir(dirname(__DIR__));
 
 // CORS 헤더 설정 (프론트엔드 접근 허용)
-header('Access-Control-Allow-Origin: *');
+$origin = $_SERVER['HTTP_ORIGIN'] ?? 'http://dev.local:5173';
+header("Access-Control-Allow-Origin: $origin");
+header('Access-Control-Allow-Credentials: true'); // 세션 쿠키 허용
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Access-Control-Max-Age: 86400');

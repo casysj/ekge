@@ -131,7 +131,8 @@ const loadGallery = async () => {
     })
 
     posts.value = response.data.posts || []
-    totalPages.value = response.data.totalPages || 1
+    totalPages.value = response.data.pagination?.pages || 1
+    currentPage.value = response.data.pagination?.currentPage || 1
   } catch (err) {
     console.error('Error loading gallery:', err)
     error.value = '갤러리를 불러오는 중 오류가 발생했습니다.'
