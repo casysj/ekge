@@ -29,22 +29,33 @@
 
         <!-- 본문 -->
         <div class="px-6 py-8">
-          <div class="prose max-w-none" v-html="post.content"></div>
+          <div class="prose max-w-none" v-html="processedContent"></div>
         </div>
 
         <!-- 첨부파일 -->
         <div v-if="post.attachments && post.attachments.length > 0" class="border-t px-6 py-4 bg-gray-50">
-          <h3 class="font-semibold text-gray-700 mb-3">첨부파일</h3>
+          <h3 class="font-semibold text-gray-700 mb-3">첨부파일 ({{ post.attachments.length }})</h3>
           <ul class="space-y-2">
-            <li v-for="file in post.attachments" :key="file.id" class="flex items-center space-x-2">
-              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <a :href="`/uploads/${file.filePath}`" target="_blank" class="text-church-green-500 hover:underline">
-                {{ file.originalName }} ({{ formatFileSize(file.fileSize) }})
-              </a>
+            <li v-for="file in post.attachments" :key="file.id" class="flex items-center justify-between p-3 bg-white rounded border">
+              <div class="flex items-center space-x-3">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                <div>
+                  <p class="font-medium text-gray-800">{{ file.originalName }}</p>
+                  <p class="text-sm text-gray-500">
+                    {{ file.imageWidth && file.imageHeight ? `${file.imageWidth}x${file.imageHeight}` : '파일' }}
+                  </p>
+                </div>
+              </div>
+              <span class="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">
+                준비중
+              </span>
             </li>
           </ul>
+          <p class="text-xs text-gray-500 mt-3">
+            ℹ️ 첨부파일은 서버 이전 작업 후 다운로드 가능합니다.
+          </p>
         </div>
 
         <!-- 버튼 -->
@@ -70,6 +81,27 @@ const boardCode = computed(() => route.params.code)
 const isLoading = ref(true)
 const error = ref(null)
 const post = ref(null)
+
+// 게시글 내용 처리 (이미지 경로 변환)
+const processedContent = computed(() => {
+  if (!post.value || !post.value.content) return ''
+
+  let content = post.value.content
+
+  // 구 사이트의 이미지 경로를 플레이스홀더로 대체
+  content = content.replace(
+    /<img([^>]*)src="[^"]*\/upfile\/[^"]*"([^>]*)>/gi,
+    '<div class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center my-4">' +
+    '<svg class="w-16 h-16 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
+    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />' +
+    '</svg>' +
+    '<p class="text-gray-500 text-sm">이미지 준비중</p>' +
+    '<p class="text-gray-400 text-xs mt-1">서버 이전 작업 후 표시됩니다</p>' +
+    '</div>'
+  )
+
+  return content
+})
 
 // 게시글 로드
 const loadPost = async () => {
