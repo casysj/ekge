@@ -76,7 +76,7 @@
                     <img :src="post.thumbnail" :alt="post.title" class="w-full h-full object-cover" />
                   </div>
                   <div class="flex-grow min-w-0">
-                    <p class="font-medium text-gray-800 truncate">{{ post.title }}</p>
+                    <p class="font-medium text-gray-800 truncate">{{ decodeHtmlEntities(post.title) }}</p>
                     <p class="text-sm text-gray-500">{{ formatDate(post.publishedAt) }}</p>
                   </div>
                 </div>
@@ -102,7 +102,7 @@
                   class="block hover:bg-gray-50 p-3 rounded transition-colors"
                 >
                   <div class="flex justify-between items-start">
-                    <p class="font-medium text-gray-800 truncate flex-grow mr-2">{{ post.title }}</p>
+                    <p class="font-medium text-gray-800 truncate flex-grow mr-2">{{ decodeHtmlEntities(post.title) }}</p>
                     <span
                       v-if="isNew(post.publishedAt)"
                       class="flex-shrink-0 text-xs bg-red-500 text-white px-2 py-1 rounded"
@@ -134,7 +134,7 @@
                   class="block hover:bg-gray-50 p-3 rounded transition-colors"
                 >
                   <div class="flex justify-between items-start">
-                    <p class="font-medium text-gray-800 truncate flex-grow mr-2">{{ post.title }}</p>
+                    <p class="font-medium text-gray-800 truncate flex-grow mr-2">{{ decodeHtmlEntities(post.title) }}</p>
                     <span
                       v-if="isNew(post.publishedAt)"
                       class="flex-shrink-0 text-xs bg-red-500 text-white px-2 py-1 rounded"
@@ -196,6 +196,13 @@ const formatDate = (dateString) => {
     month: '2-digit',
     day: '2-digit'
   })
+}
+
+// HTML Entity 디코딩
+const decodeHtmlEntities = (text) => {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
 }
 
 // 신규 게시글 확인 (3일 이내)

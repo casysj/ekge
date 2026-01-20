@@ -9,7 +9,7 @@
           </div>
           <div class="flex items-center space-x-4">
             <router-link
-              to="/admin/login"
+              to="/admin/dashboard"
               class="hover:text-church-light-300 transition-colors"
             >
               관리자

@@ -84,12 +84,9 @@ export function useAuth() {
       return true
     }
 
-    // 세션 토큰이 있으면 사용자 정보 가져오기
-    if (sessionStorage.getItem('auth_token')) {
-      return await fetchUser()
-    }
-
-    return false
+    // 세션 쿠키 기반 인증이므로 항상 서버에 확인
+    // (백엔드가 세션 쿠키를 통해 인증 상태를 관리함)
+    return await fetchUser()
   }
 
   return {

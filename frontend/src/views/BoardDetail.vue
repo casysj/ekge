@@ -17,7 +17,7 @@
       <div v-else-if="post" class="bg-white rounded-lg shadow-md overflow-hidden">
         <!-- 헤더 -->
         <div class="border-b px-6 py-4 bg-gray-50">
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{{ post.title }}</h1>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{{ decodeHtmlEntities(post.title) }}</h1>
           <div class="flex flex-wrap items-center text-sm text-gray-600 gap-4">
             <span>작성자: {{ post.authorName }}</span>
             <span>|</span>
@@ -36,7 +36,7 @@
         <div v-if="post.attachments && post.attachments.length > 0" class="border-t px-6 py-4 bg-gray-50">
           <h3 class="font-semibold text-gray-700 mb-3">첨부파일 ({{ post.attachments.length }})</h3>
           <ul class="space-y-2">
-            <li v-for="file in post.attachments" :key="file.id" class="flex items-center justify-between p-3 bg-white rounded border">
+            <li v-for="file in post.attachments" :key="file.id" class="flex items-center justify-between p-3 bg-white rounded border hover:bg-gray-50">
               <div class="flex items-center space-x-3">
                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
@@ -44,18 +44,21 @@
                 <div>
                   <p class="font-medium text-gray-800">{{ file.originalName }}</p>
                   <p class="text-sm text-gray-500">
-                    {{ file.imageWidth && file.imageHeight ? `${file.imageWidth}x${file.imageHeight}` : '파일' }}
+                    {{ formatFileSize(file.fileSize) }}
+                    <span v-if="file.imageWidth && file.imageHeight"> · {{ file.imageWidth }}x{{ file.imageHeight }}</span>
+                    <span v-if="file.downloadCount > 0"> · {{ file.downloadCount }}회 다운로드</span>
                   </p>
                 </div>
               </div>
-              <span class="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">
-                준비중
-              </span>
+              <a
+                :href="getFileUrl(file.id)"
+                target="_blank"
+                class="text-church-green-500 hover:text-church-green-600 font-medium text-sm"
+              >
+                {{ file.fileType === 'image' ? '보기' : '다운로드' }}
+              </a>
             </li>
           </ul>
-          <p class="text-xs text-gray-500 mt-3">
-            ℹ️ 첨부파일은 서버 이전 작업 후 다운로드 가능합니다.
-          </p>
         </div>
 
         <!-- 버튼 -->
@@ -82,13 +85,23 @@ const isLoading = ref(true)
 const error = ref(null)
 const post = ref(null)
 
-// 게시글 내용 처리 (이미지 경로 변환)
+// HTML Entity 디코딩
+const decodeHtmlEntities = (text) => {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
+}
+
+// 게시글 내용 처리 (HTML Entity 디코딩, 이미지 경로 변환)
 const processedContent = computed(() => {
   if (!post.value || !post.value.content) return ''
 
   let content = post.value.content
 
-  // 구 사이트의 이미지 경로를 플레이스홀더로 대체
+  // 1. HTML Entity 디코딩 (&lt; &gt; &nbsp; &amp; 등)
+  content = decodeHtmlEntities(content)
+
+  // 2. 구 사이트의 이미지 경로를 플레이스홀더로 대체
   content = content.replace(
     /<img([^>]*)src="[^"]*\/upfile\/[^"]*"([^>]*)>/gi,
     '<div class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center my-4">' +
@@ -139,6 +152,11 @@ const formatFileSize = (bytes) => {
   const sizes = ['B', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+// 파일 URL 생성
+const getFileUrl = (fileId) => {
+  return `/api/files/${fileId}`
 }
 
 onMounted(() => {

@@ -164,6 +164,19 @@ return [
                     ],
                 ],
             ],
+            'api-admin-delete-attachment' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/admin/attachments/:id',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'deleteAttachment',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
             'api-admin-stats' => [
                 'type'    => Literal::class,
                 'options' => [
@@ -171,6 +184,30 @@ return [
                     'defaults' => [
                         'controller' => Controller\AdminController::class,
                         'action'     => 'stats',
+                    ],
+                ],
+            ],
+            // 파일 서빙
+            'api-file-serve' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/files/:id',
+                    'defaults' => [
+                        'controller' => Controller\FileController::class,
+                        'action'     => 'serve',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
+            'api-file-serve-by-path' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/files/path/:path',
+                    'defaults' => [
+                        'controller' => Controller\FileController::class,
+                        'action'     => 'serveByPath',
                     ],
                 ],
             ],
@@ -183,6 +220,7 @@ return [
             Controller\BoardController::class => Controller\Factory\BoardControllerFactory::class,
             Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
             Controller\MenuController::class => Controller\Factory\MenuControllerFactory::class,
+            Controller\FileController::class => Controller\Factory\FileControllerFactory::class,
         ],
     ],
     'service_manager' => [

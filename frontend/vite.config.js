@@ -11,6 +11,12 @@ export default defineConfig({
       'dev.local',
       'localhost',
       '.local' // *.local 도메인 모두 허용
-    ]
+    ],
+    proxy: {
+      '/api': {
+        target: 'http://nginx',
+        changeOrigin: true
+      }
+    }
   }
 })

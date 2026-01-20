@@ -89,6 +89,11 @@ class BoardController extends AbstractActionController
                     'isNotice' => $post->isNotice(),
                     'publishedAt' => $post->getPublishedAt()?->format('Y-m-d H:i:s'),
                     'hasAttachments' => count($post->getAttachments()) > 0,
+                    'board' => [
+                        'id' => $post->getBoard()->getId(),
+                        'code' => $post->getBoard()->getBoardCode(),
+                        'name' => $post->getBoard()->getBoardName(),
+                    ],
                 ];
             }, $result['posts']),
             'notices' => isset($result['notices']) ? array_map(function($post) {
@@ -97,7 +102,14 @@ class BoardController extends AbstractActionController
                     'title' => $post->getTitle(),
                     'authorName' => $post->getAuthorName(),
                     'viewCount' => $post->getViewCount(),
+                    'isNotice' => $post->isNotice(),
                     'publishedAt' => $post->getPublishedAt()?->format('Y-m-d H:i:s'),
+                    'hasAttachments' => count($post->getAttachments()) > 0,
+                    'board' => [
+                        'id' => $post->getBoard()->getId(),
+                        'code' => $post->getBoard()->getBoardCode(),
+                        'name' => $post->getBoard()->getBoardName(),
+                    ],
                 ];
             }, $result['notices']) : [],
             'pagination' => [

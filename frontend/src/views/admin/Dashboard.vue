@@ -71,6 +71,31 @@
       </div>
     </div>
 
+    <!-- 게시판별 통계 -->
+    <div class="bg-white rounded-lg shadow mb-8">
+      <div class="px-6 py-4 border-b">
+        <h2 class="text-xl font-semibold text-gray-800">게시판별 통계</h2>
+      </div>
+      <div class="p-6">
+        <div v-if="boardStats.length === 0" class="text-center text-gray-500 py-8">
+          게시판이 없습니다
+        </div>
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="board in boardStats"
+            :key="board.boardCode"
+            class="border rounded-lg p-4 hover:shadow-md transition-shadow"
+          >
+            <h3 class="font-semibold text-gray-800 mb-2">{{ board.boardName }}</h3>
+            <div class="flex items-baseline">
+              <span class="text-3xl font-bold text-church-green-500">{{ board.postCount }}</span>
+              <span class="text-sm text-gray-500 ml-2">개 게시글</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 최근 게시글 -->
     <div class="bg-white rounded-lg shadow">
       <div class="px-6 py-4 border-b">
@@ -94,7 +119,7 @@
                 {{ post.title }}
               </router-link>
               <p class="text-sm text-gray-500 mt-1">
-                {{ post.boardName }} · {{ formatDate(post.publishedAt) }}
+                {{ post.boardName }} · {{ post.authorName }} · {{ formatDate(post.publishedAt) }}
               </p>
             </div>
             <span class="text-sm text-gray-400">조회 {{ post.viewCount }}</span>
@@ -112,6 +137,7 @@ import adminService from '../../services/adminService'
 const isLoading = ref(true)
 const stats = ref(null)
 const recentPosts = ref([])
+const boardStats = ref([])
 
 const loadDashboard = async () => {
   isLoading.value = true
@@ -122,6 +148,7 @@ const loadDashboard = async () => {
     if (response.data.success) {
       stats.value = response.data.stats
       recentPosts.value = response.data.recentPosts || []
+      boardStats.value = response.data.stats.boardStats || []
     }
   } catch (error) {
     console.error('Dashboard load error:', error)

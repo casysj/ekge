@@ -76,6 +76,15 @@ const adminService = {
         'Content-Type': 'multipart/form-data'
       }
     })
+  },
+
+  /**
+   * 첨부파일 삭제
+   * @param {number} attachmentId - 첨부파일 ID
+   * @returns {Promise}
+   */
+  deleteAttachment(attachmentId) {
+    return apiClient.delete(`/admin/attachments/${attachmentId}`)
   }
 }
 

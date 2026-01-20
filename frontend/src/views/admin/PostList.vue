@@ -16,7 +16,6 @@
           @change="loadPosts"
           class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-church-green-500"
         >
-          <option value="">전체</option>
           <option v-for="board in boards" :key="board.code" :value="board.code">
             {{ board.name }}
           </option>
@@ -67,7 +66,7 @@
                   target="_blank"
                   class="text-sm text-gray-900 hover:text-church-green-500"
                 >
-                  {{ post.title }}
+                  {{ decodeHtmlEntities(post.title) }}
                 </router-link>
               </div>
             </td>
@@ -138,7 +137,7 @@ import adminService from '../../services/adminService'
 const isLoading = ref(true)
 const boards = ref([])
 const posts = ref([])
-const selectedBoard = ref('')
+const selectedBoard = ref('sermon')
 
 const currentPage = ref(1)
 const totalPages = ref(1)
@@ -172,6 +171,7 @@ const loadPosts = async () => {
       // 전체 게시판의 게시글 로드 (백엔드 API에 구현 필요)
       // 임시로 첫번째 게시판 사용
       const firstBoard = boards.value[0]?.code || 'sermon'
+      console.log(firstBoard)
       response = await boardService.getBoardPosts(firstBoard, {
         page: currentPage.value,
         limit: postsPerPage
@@ -179,7 +179,10 @@ const loadPosts = async () => {
     }
 
     if (response.data.success) {
-      posts.value = response.data.posts || []
+      // 공지사항과 일반 게시글을 합쳐서 표시 (공지사항이 먼저)
+      const notices = response.data.notices || []
+      const regularPosts = response.data.posts || []
+      posts.value = [...notices, ...regularPosts]
       totalPages.value = response.data.pagination?.pages || 1
     }
   } catch (error) {
@@ -237,6 +240,14 @@ const displayedPages = computed(() => {
 const getBoardName = (code) => {
   const board = boards.value.find(b => b.code === code)
   return board?.name || code
+}
+
+// HTML Entity 디코딩
+const decodeHtmlEntities = (text) => {
+  if (!text) return ''
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
 }
 
 // 날짜 포맷팅

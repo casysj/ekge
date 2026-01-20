@@ -21,7 +21,7 @@
 
       <!-- 게시글 목록 -->
       <div v-else>
-        <div v-if="posts.length === 0" class="bg-white rounded-lg shadow-md p-12 text-center">
+        <div v-if="posts.length === 0 && notices.length === 0" class="bg-white rounded-lg shadow-md p-12 text-center">
           <p class="text-gray-500">게시글이 없습니다.</p>
         </div>
 
@@ -34,7 +34,47 @@
             <div class="col-span-2 text-center">날짜</div>
           </div>
 
-          <!-- 게시글 리스트 -->
+          <!-- 공지사항 리스트 -->
+          <div v-if="notices.length > 0">
+            <router-link
+              v-for="notice in notices"
+              :key="'notice-' + notice.id"
+              :to="`/board/${boardCode}/${notice.id}`"
+              class="grid grid-cols-12 gap-4 px-6 py-4 border-b bg-yellow-50 hover:bg-yellow-100 transition-colors"
+            >
+              <!-- 번호 -->
+              <div class="col-span-12 md:col-span-1 text-center">
+                <span class="inline-block px-2 py-0.5 bg-red-500 text-white text-xs rounded font-semibold">공지</span>
+              </div>
+
+              <!-- 제목 -->
+              <div class="col-span-12 md:col-span-7">
+                <div class="flex items-center space-x-2">
+                  <span class="font-medium text-gray-800 hover:text-church-green-500">
+                    {{ decodeHtmlEntities(notice.title) }}
+                  </span>
+                  <span
+                    v-if="isNew(notice.publishedAt)"
+                    class="text-xs bg-red-500 text-white px-2 py-0.5 rounded"
+                  >
+                    NEW
+                  </span>
+                </div>
+              </div>
+
+              <!-- 작성자 -->
+              <div class="col-span-6 md:col-span-2 text-left md:text-center">
+                <span class="text-sm text-gray-600">{{ notice.authorName }}</span>
+              </div>
+
+              <!-- 날짜 -->
+              <div class="col-span-6 md:col-span-2 text-right md:text-center">
+                <span class="text-sm text-gray-600">{{ formatDate(notice.publishedAt) }}</span>
+              </div>
+            </router-link>
+          </div>
+
+          <!-- 일반 게시글 리스트 -->
           <div>
             <router-link
               v-for="(post, index) in posts"
@@ -51,7 +91,7 @@
               <div class="col-span-12 md:col-span-7">
                 <div class="flex items-center space-x-2">
                   <span class="font-medium text-gray-800 hover:text-church-green-500">
-                    {{ post.title }}
+                    {{ decodeHtmlEntities(post.title) }}
                   </span>
                   <span
                     v-if="isNew(post.publishedAt)"
@@ -131,6 +171,7 @@ const boardCode = computed(() => route.params.code)
 const isLoading = ref(true)
 const error = ref(null)
 const posts = ref([])
+const notices = ref([])
 const currentPage = ref(1)
 const totalPosts = ref(0)
 const totalPages = ref(1)
@@ -168,6 +209,7 @@ const loadPosts = async () => {
     })
 
     posts.value = response.data.posts || []
+    notices.value = response.data.notices || []
     totalPosts.value = response.data.pagination?.total || 0
     totalPages.value = response.data.pagination?.pages || 1
     postsPerPage.value = response.data.pagination?.perPage || 20
@@ -224,6 +266,14 @@ const isNew = (dateString) => {
   const now = new Date()
   const diffDays = (now - postDate) / (1000 * 60 * 60 * 24)
   return diffDays <= 3
+}
+
+// HTML Entity 디코딩
+const decodeHtmlEntities = (text) => {
+  if (!text) return ''
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
 }
 
 // 게시판 코드 변경 시 데이터 리로드

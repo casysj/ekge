@@ -9,6 +9,7 @@ use Application\Service\AuthenticationService;
 use Application\Service\BoardService;
 use Application\Service\PostService;
 use Application\Service\FileUploadService;
+use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -22,7 +23,8 @@ class AdminControllerFactory
         $boardService = $container->get(BoardService::class);
         $postService = $container->get(PostService::class);
         $fileUploadService = $container->get(FileUploadService::class);
+        $entityManager = $container->get(EntityManager::class);
 
-        return new AdminController($authService, $boardService, $postService, $fileUploadService);
+        return new AdminController($authService, $boardService, $postService, $fileUploadService, $entityManager);
     }
 }
