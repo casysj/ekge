@@ -59,6 +59,18 @@
           >
             ✏️ 새 게시글 작성
           </router-link>
+
+          <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-500 uppercase">
+            사이트 관리
+          </div>
+
+          <router-link
+            to="/admin/popups"
+            class="block px-4 py-2 rounded hover:bg-gray-100"
+            :class="{ 'bg-church-green-100 text-church-green-700': $route.path.startsWith('/admin/popups') }"
+          >
+            🔔 팝업 관리
+          </router-link>
         </nav>
       </aside>
 

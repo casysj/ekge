@@ -60,13 +60,16 @@
         <label class="block text-sm font-medium text-gray-700 mb-2">
           내용 <span class="text-red-500">*</span>
         </label>
-        <textarea
-          v-model="formData.content"
-          required
-          rows="15"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-church-green-500"
-          placeholder="내용을 입력하세요"
-        ></textarea>
+        <div class="quill-editor-container">
+          <QuillEditor
+            v-model:content="formData.content"
+            contentType="html"
+            :options="editorOptions"
+            theme="snow"
+            placeholder="내용을 입력하세요"
+            style="min-height: 300px;"
+          />
+        </div>
       </div>
 
       <!-- 작성자 -->
@@ -223,6 +226,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import adminService from '../../services/adminService'
 import boardService from '../../services/boardService'
 import { useAuth } from '../../composables/useAuth'
@@ -252,6 +257,22 @@ const formData = ref({
 const selectedFiles = ref([])
 const existingAttachments = ref([])
 const fileInput = ref(null)
+
+// Quill 에디터 옵션
+const editorOptions = {
+  modules: {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      ['link', 'image'],
+      ['clean']
+    ]
+  },
+  placeholder: '내용을 입력하세요'
+}
 
 // 게시판 목록 로드
 const loadBoards = async () => {
@@ -415,3 +436,33 @@ onMounted(async () => {
   isLoading.value = false
 })
 </script>
+
+<style scoped>
+.quill-editor-container {
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.quill-editor-container :deep(.ql-toolbar) {
+  border: none;
+  border-bottom: 1px solid #d1d5db;
+  background-color: #f9fafb;
+}
+
+.quill-editor-container :deep(.ql-container) {
+  border: none;
+  font-size: 1rem;
+  min-height: 300px;
+}
+
+.quill-editor-container :deep(.ql-editor) {
+  min-height: 300px;
+  padding: 1rem;
+}
+
+.quill-editor-container :deep(.ql-editor.ql-blank::before) {
+  color: #9ca3af;
+  font-style: normal;
+}
+</style>

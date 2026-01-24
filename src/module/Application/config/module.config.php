@@ -211,6 +211,54 @@ return [
                     ],
                 ],
             ],
+            // 팝업 API (공개)
+            'api-popup-active' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/popup/active',
+                    'defaults' => [
+                        'controller' => Controller\PopupController::class,
+                        'action'     => 'active',
+                    ],
+                ],
+            ],
+            // 팝업 관리자 API
+            'api-admin-popups' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/popups',
+                    'defaults' => [
+                        'controller' => Controller\PopupController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'api-admin-popup-item' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/admin/popups/:id',
+                    'defaults' => [
+                        'controller' => Controller\PopupController::class,
+                        'action'     => 'item',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
+            'api-admin-popup-toggle' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/admin/popups/:id/toggle',
+                    'defaults' => [
+                        'controller' => Controller\PopupController::class,
+                        'action'     => 'toggle',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
@@ -221,11 +269,13 @@ return [
             Controller\AdminController::class => Controller\Factory\AdminControllerFactory::class,
             Controller\MenuController::class => Controller\Factory\MenuControllerFactory::class,
             Controller\FileController::class => Controller\Factory\FileControllerFactory::class,
+            Controller\PopupController::class => Controller\Factory\PopupControllerFactory::class,
         ],
     ],
     'service_manager' => [
         'factories' => [
             Service\BoardService::class => Service\Factory\BoardServiceFactory::class,
+            Service\PopupService::class => Service\Factory\PopupServiceFactory::class,
             Service\PostService::class => Service\Factory\PostServiceFactory::class,
             Service\AuthenticationService::class => Service\Factory\AuthenticationServiceFactory::class,
             Service\FileUploadService::class => Service\Factory\FileUploadServiceFactory::class,

@@ -1,5 +1,7 @@
 <template>
   <div class="bg-gray-50">
+    <!-- 팝업 모달 -->
+    <PopupModal />
     <!-- 환영 섹션 -->
     <section class="bg-gradient-to-br from-church-green-500 to-church-green-700 text-white py-16">
       <div class="container mx-auto px-4 text-center">
@@ -156,6 +158,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import boardService from '../services/boardService'
+import PopupModal from '../components/PopupModal.vue'
 
 const isLoading = ref(true)
 const error = ref(null)

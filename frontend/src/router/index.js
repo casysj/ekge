@@ -74,6 +74,24 @@ const routes = [
         name: 'AdminPostEdit',
         component: () => import('../views/admin/PostForm.vue'),
         meta: { title: '게시글 수정' }
+      },
+      {
+        path: 'popups',
+        name: 'AdminPopups',
+        component: () => import('../views/admin/PopupList.vue'),
+        meta: { title: '팝업 관리' }
+      },
+      {
+        path: 'popups/create',
+        name: 'AdminPopupCreate',
+        component: () => import('../views/admin/PopupForm.vue'),
+        meta: { title: '팝업 작성' }
+      },
+      {
+        path: 'popups/:id/edit',
+        name: 'AdminPopupEdit',
+        component: () => import('../views/admin/PopupForm.vue'),
+        meta: { title: '팝업 수정' }
       }
     ]
   },
