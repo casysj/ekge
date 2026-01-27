@@ -32,6 +32,12 @@ const routes = [
     component: () => import('../views/About.vue'),
     meta: { title: '교회소개' }
   },
+  {
+    path: '/menu/:id',
+    name: 'MenuPage',
+    component: () => import('../views/MenuPage.vue'),
+    meta: { title: '메뉴' }
+  },
 
   // 관리자 로그인 (인증 불필요)
   {
@@ -74,6 +80,12 @@ const routes = [
         name: 'AdminPostEdit',
         component: () => import('../views/admin/PostForm.vue'),
         meta: { title: '게시글 수정' }
+      },
+      {
+        path: 'change-password',
+        name: 'AdminChangePassword',
+        component: () => import('../views/admin/ChangePassword.vue'),
+        meta: { title: '비밀번호 변경' }
       },
       {
         path: 'popups',

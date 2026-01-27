@@ -177,6 +177,16 @@ return [
                     ],
                 ],
             ],
+            'api-admin-change-password' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/api/admin/change-password',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
+                        'action'     => 'changePassword',
+                    ],
+                ],
+            ],
             'api-admin-stats' => [
                 'type'    => Literal::class,
                 'options' => [

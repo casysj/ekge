@@ -1,154 +1,205 @@
 <template>
-  <div class="bg-gray-50">
+  <div class="bg-gray-50 min-h-screen">
     <!-- 팝업 모달 -->
     <PopupModal />
-    <!-- 환영 섹션 -->
-    <section class="bg-gradient-to-br from-church-green-500 to-church-green-700 text-white py-16">
-      <div class="container mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">에센 한인교회</h1>
-        <p class="text-xl md:text-2xl mb-2">Ex.Koreanische Gemeinde in Essen e.V.</p>
-        <p class="text-lg opacity-90">예세한인교회가 함께하는 방문을 진심으로 환영합니다.</p>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-emerald-900 to-church-green-800 text-white overflow-hidden">
+      <!-- Decorative background pattern (optional) -->
+      <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+      
+      <div class="relative container mx-auto px-4 py-24 md:py-32 flex flex-col items-center text-center">
+        <span class="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-light tracking-wider mb-6 animate-fade-in-up">
+          Ev. Koreanische Gemeinde in Essen e.V.
+        </span>
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight animate-fade-in-up delay-100">
+          에센 한인교회에<br class="md:hidden" /> 오신 것을 환영합니다
+        </h1>
+        <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-10 font-light leading-relaxed animate-fade-in-up delay-200">
+          하나님의 사랑이 넘치는 공동체, 에센 한인교회입니다.<br />
+          함께 예배하며 교제하는 기쁨을 누리시길 소망합니다.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-300">
+          <router-link
+            to="/menu/2"
+            class="px-8 py-3 bg-white text-church-green-800 rounded-full font-semibold hover:bg-gray-100 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          >
+            교회 소개
+          </router-link>
+          <router-link
+            to="/board/sermon"
+            class="px-8 py-3 bg-transparent border border-white/40 text-white rounded-full font-semibold hover:bg-white/10 transition duration-300 backdrop-blur-sm"
+          >
+            설교 말씀
+          </router-link>
+        </div>
       </div>
     </section>
 
-    <!-- 예배 시간 안내 -->
-    <section class="bg-white py-8 border-b">
+    <!-- Worship Info Section -->
+    <section class="py-16 bg-white relative -mt-8 z-10 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
       <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          <div class="flex items-center justify-center space-x-4 p-4 bg-church-light-50 rounded-lg">
-            <svg class="w-12 h-12 text-church-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800 mb-3">예배 안내</h2>
+          <div class="w-12 h-1 bg-church-green-500 mx-auto rounded-full"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <!-- Sunday Service -->
+          <div class="group p-8 rounded-2xl border border-gray-100 bg-white hover:border-church-green-200 hover:shadow-lg transition-all duration-300 flex items-start space-x-6">
+            <div class="flex-shrink-0 w-14 h-14 rounded-full bg-church-green-50 flex items-center justify-center text-church-green-600 group-hover:bg-church-green-500 group-hover:text-white transition-colors duration-300">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
             <div>
-              <p class="text-sm text-gray-600">주일 대예배</p>
-              <p class="text-lg font-bold text-gray-800">매주 일요일 오후 3시</p>
+              <h3 class="text-xl font-bold text-gray-900 mb-2">주일 대예배</h3>
+              <p class="text-gray-600 mb-1">매주 일요일 오후 3시</p>
+              <p class="text-sm text-gray-400">본당 대예배실</p>
             </div>
           </div>
-          <div class="flex items-center justify-center space-x-4 p-4 bg-church-light-50 rounded-lg">
-            <svg class="w-12 h-12 text-church-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+
+          <!-- Wednesday Service -->
+          <div class="group p-8 rounded-2xl border border-gray-100 bg-white hover:border-church-green-200 hover:shadow-lg transition-all duration-300 flex items-start space-x-6">
+            <div class="flex-shrink-0 w-14 h-14 rounded-full bg-church-green-50 flex items-center justify-center text-church-green-600 group-hover:bg-church-green-500 group-hover:text-white transition-colors duration-300">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </div>
             <div>
-              <p class="text-sm text-gray-600">금요 기도회</p>
-              <p class="text-lg font-bold text-gray-800">매주 금요일 저녁 7시</p>
+              <h3 class="text-xl font-bold text-gray-900 mb-2">수요 예배</h3>
+              <p class="text-gray-600 mb-1">매주 수요일 저녁 7시</p>
+              <p class="text-sm text-gray-400">소예배실</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 메인 콘텐츠 그리드 -->
-    <section class="container mx-auto px-4 py-12">
-      <!-- 로딩 상태 -->
-      <div v-if="isLoading" class="text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-church-green-500 border-t-transparent"></div>
-        <p class="mt-4 text-gray-600">로딩 중...</p>
-      </div>
+    <!-- Latest Content Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <!-- Content Grids -->
+        <div v-if="isLoading" class="text-center py-20">
+          <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-church-green-500 border-t-transparent"></div>
+        </div>
 
-      <!-- 에러 상태 -->
-      <div v-else-if="error" class="text-center py-12">
-        <p class="text-red-600">{{ error }}</p>
-        <button @click="loadData" class="mt-4 btn-primary">다시 시도</button>
-      </div>
+        <div v-else-if="error" class="text-center py-20">
+          <p class="text-red-500">{{ error }}</p>
+          <button @click="loadData" class="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">다시 시도</button>
+        </div>
 
-      <!-- 콘텐츠 그리드 -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- 교회앨범 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover">
-          <div class="bg-church-green-500 text-white px-6 py-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold">교회앨범</h2>
-            <router-link to="/gallery" class="text-sm hover:underline">더보기 +</router-link>
-          </div>
-          <div class="p-6">
-            <div v-if="galleryPosts.length === 0" class="text-center text-gray-500 py-8">
-              게시글이 없습니다
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          <!-- Gallery Widget (Modern) -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+            <div class="flex justify-between items-end mb-6">
+              <div>
+                <span class="text-xs font-bold text-church-green-600 uppercase tracking-wider mb-1 block">Gallery</span>
+                <h2 class="text-2xl font-bold text-gray-900">교회 앨범</h2>
+              </div>
+              <router-link to="/gallery" class="text-sm text-gray-500 hover:text-church-green-600 transition-colors flex items-center gap-1">
+                더보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </router-link>
             </div>
-            <div v-else class="space-y-4">
-              <router-link
-                v-for="post in galleryPosts"
-                :key="post.id"
+            
+            <div class="space-y-4">
+              <router-link 
+                v-for="post in galleryPosts" 
+                :key="post.id" 
                 :to="`/board/gallery/${post.id}`"
-                class="block hover:bg-gray-50 p-3 rounded transition-colors"
+                class="group block"
               >
-                <div class="flex items-start space-x-3">
-                  <div
-                    v-if="post.thumbnail"
-                    class="flex-shrink-0 w-16 h-16 bg-gray-200 rounded overflow-hidden"
-                  >
-                    <img :src="post.thumbnail" :alt="post.title" class="w-full h-full object-cover" />
+                <div class="flex gap-4">
+                  <div class="w-20 h-20 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0 relative">
+                    <img 
+                      v-if="post.thumbnail" 
+                      :src="post.thumbnail" 
+                      :alt="post.title" 
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                    />
+                    <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
+                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
                   </div>
-                  <div class="flex-grow min-w-0">
-                    <p class="font-medium text-gray-800 truncate">{{ decodeHtmlEntities(post.title) }}</p>
-                    <p class="text-sm text-gray-500">{{ formatDate(post.publishedAt) }}</p>
+                  <div class="flex-1 min-w-0 py-1">
+                    <h4 class="font-medium text-gray-900 truncate group-hover:text-church-green-600 transition-colors">
+                      {{ decodeHtmlEntities(post.title) }}
+                    </h4>
+                    <p class="text-xs text-gray-500 mt-2">{{ formatDate(post.publishedAt) }}</p>
                   </div>
                 </div>
               </router-link>
+              <div v-if="galleryPosts.length === 0" class="text-center text-gray-400 py-8 text-sm">
+                등록된 앨범이 없습니다.
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- 교회소식 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover">
-          <div class="bg-church-light-500 text-white px-6 py-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold">교회소식</h2>
-            <router-link to="/board/notice" class="text-sm hover:underline">더보기 +</router-link>
-          </div>
-          <div class="p-6">
-            <div v-if="noticePosts.length === 0" class="text-center text-gray-500 py-8">
-              게시글이 없습니다
+          <!-- Notice Widget (Modern) -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+            <div class="flex justify-between items-end mb-6">
+              <div>
+                <span class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1 block">Notice</span>
+                <h2 class="text-2xl font-bold text-gray-900">교회 소식</h2>
+              </div>
+              <router-link to="/board/notice" class="text-sm text-gray-500 hover:text-blue-600 transition-colors flex items-center gap-1">
+                더보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </router-link>
             </div>
-            <ul v-else class="space-y-3">
-              <li v-for="post in noticePosts" :key="post.id">
-                <router-link
-                  :to="`/board/notice/${post.id}`"
-                  class="block hover:bg-gray-50 p-3 rounded transition-colors"
-                >
-                  <div class="flex justify-between items-start">
-                    <p class="font-medium text-gray-800 truncate flex-grow mr-2">{{ decodeHtmlEntities(post.title) }}</p>
-                    <span
-                      v-if="isNew(post.publishedAt)"
-                      class="flex-shrink-0 text-xs bg-red-500 text-white px-2 py-1 rounded"
-                    >
-                      NEW
-                    </span>
+
+            <ul class="divide-y divide-gray-100">
+              <li v-for="post in noticePosts" :key="post.id" class="py-3 first:pt-0 last:pb-0">
+                <router-link :to="`/board/notice/${post.id}`" class="group block">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                      <p class="text-gray-800 font-medium truncate group-hover:text-blue-600 transition-colors">
+                        {{ decodeHtmlEntities(post.title) }}
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">{{ formatDate(post.publishedAt) }}</p>
+                    </div>
+                    <span v-if="isNew(post.publishedAt)" class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-red-500 mt-2"></span>
                   </div>
-                  <p class="text-sm text-gray-500 mt-1">{{ formatDate(post.publishedAt) }}</p>
                 </router-link>
+              </li>
+              <li v-if="noticePosts.length === 0" class="text-center text-gray-400 py-8 text-sm">
+                등록된 소식이 없습니다.
               </li>
             </ul>
           </div>
-        </div>
 
-        <!-- 자유게시판 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover">
-          <div class="bg-gray-600 text-white px-6 py-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold">자유게시판</h2>
-            <router-link to="/board/free" class="text-sm hover:underline">더보기 +</router-link>
-          </div>
-          <div class="p-6">
-            <div v-if="freePosts.length === 0" class="text-center text-gray-500 py-8">
-              게시글이 없습니다
+          <!-- Free Board Widget (Modern) -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+            <div class="flex justify-between items-end mb-6">
+              <div>
+                <span class="text-xs font-bold text-purple-600 uppercase tracking-wider mb-1 block">Community</span>
+                <h2 class="text-2xl font-bold text-gray-900">자유 게시판</h2>
+              </div>
+              <router-link to="/board/free" class="text-sm text-gray-500 hover:text-purple-600 transition-colors flex items-center gap-1">
+                더보기 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </router-link>
             </div>
-            <ul v-else class="space-y-3">
-              <li v-for="post in freePosts" :key="post.id">
-                <router-link
-                  :to="`/board/free/${post.id}`"
-                  class="block hover:bg-gray-50 p-3 rounded transition-colors"
-                >
-                  <div class="flex justify-between items-start">
-                    <p class="font-medium text-gray-800 truncate flex-grow mr-2">{{ decodeHtmlEntities(post.title) }}</p>
-                    <span
-                      v-if="isNew(post.publishedAt)"
-                      class="flex-shrink-0 text-xs bg-red-500 text-white px-2 py-1 rounded"
-                    >
-                      NEW
-                    </span>
+
+            <ul class="divide-y divide-gray-100">
+              <li v-for="post in freePosts" :key="post.id" class="py-3 first:pt-0 last:pb-0">
+                <router-link :to="`/board/free/${post.id}`" class="group block">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                      <p class="text-gray-800 font-medium truncate group-hover:text-purple-600 transition-colors">
+                        {{ decodeHtmlEntities(post.title) }}
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">{{ formatDate(post.publishedAt) }}</p>
+                    </div>
+                    <span v-if="isNew(post.publishedAt)" class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-red-500 mt-2"></span>
                   </div>
-                  <p class="text-sm text-gray-500 mt-1">{{ formatDate(post.publishedAt) }}</p>
                 </router-link>
+              </li>
+               <li v-if="freePosts.length === 0" class="text-center text-gray-400 py-8 text-sm">
+                게시글이 없습니다.
               </li>
             </ul>
           </div>
+
         </div>
       </div>
     </section>
@@ -174,7 +225,7 @@ const loadData = async () => {
   try {
     // 각 게시판에서 최신 게시글 5개씩 가져오기
     const [galleryRes, noticeRes, freeRes] = await Promise.all([
-      boardService.getBoardPosts('gallery', { limit: 5 }),
+      boardService.getBoardPosts('gallery', { limit: 3 }), // 갤러리는 3개만
       boardService.getBoardPosts('notice', { limit: 5 }),
       boardService.getBoardPosts('free', { limit: 5 })
     ])
@@ -221,3 +272,26 @@ onMounted(() => {
   loadData()
 })
 </script>
+
+<style scoped>
+/* Simple Fade In Up Animation for Hero Text */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0; /* Start hidden */
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.3s; }
+.delay-300 { animation-delay: 0.5s; }
+</style>

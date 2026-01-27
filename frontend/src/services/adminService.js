@@ -85,6 +85,15 @@ const adminService = {
    */
   deleteAttachment(attachmentId) {
     return apiClient.delete(`/admin/attachments/${attachmentId}`)
+  },
+
+  /**
+   * 비밀번호 변경
+   * @param {object} data - { currentPassword, newPassword, confirmPassword }
+   * @returns {Promise}
+   */
+  changePassword(data) {
+    return apiClient.post('/admin/change-password', data)
   }
 }
 

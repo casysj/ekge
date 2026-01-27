@@ -65,7 +65,7 @@ class MenuController extends AbstractActionController
                 'name' => $menu->getBoard()->getBoardName(),
             ];
         } elseif ($menu->getMenuType() === 'external') {
-            $data['url'] => $menu->getExternalUrl();
+            $data['url'] = $menu->getExternalUrl();
         } elseif ($menu->getMenuType() === 'html' && $menu->getContent()) {
             $data['content'] = $menu->getContent()->getContent();
         }

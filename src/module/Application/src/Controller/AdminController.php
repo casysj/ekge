@@ -384,6 +384,45 @@ class AdminController extends AbstractActionController
     }
 
     /**
+     * 비밀번호 변경
+     * POST /api/admin/change-password
+     */
+    public function changePasswordAction()
+    {
+        if (!$this->authService->isAuthenticated()) {
+            return new JsonModel([
+                'success' => false,
+                'message' => '인증이 필요합니다.',
+            ]);
+        }
+
+        if ($this->getRequest()->isPost()) {
+            $data = json_decode($this->getRequest()->getContent(), true);
+
+            $currentPassword = $data['currentPassword'] ?? '';
+            $newPassword = $data['newPassword'] ?? '';
+            $confirmPassword = $data['confirmPassword'] ?? '';
+
+            if ($newPassword !== $confirmPassword) {
+                return new JsonModel([
+                    'success' => false,
+                    'message' => '새 비밀번호가 일치하지 않습니다.',
+                ]);
+            }
+
+            $user = $this->authService->getCurrentUser();
+            $result = $this->authService->changePassword($user, $currentPassword, $newPassword);
+
+            return new JsonModel($result);
+        }
+
+        return new JsonModel([
+            'success' => false,
+            'message' => 'POST 메서드만 허용됩니다.',
+        ]);
+    }
+
+    /**
      * 대시보드 통계
      * GET /api/admin/stats
      */

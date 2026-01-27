@@ -1,51 +1,63 @@
 <template>
-  <div class="bg-gray-50 min-h-screen py-8">
+  <div class="bg-gray-50 min-h-screen py-12">
     <div class="container mx-auto px-4 max-w-4xl">
       <!-- 로딩 상태 -->
-      <div v-if="isLoading" class="bg-white rounded-lg shadow-md p-12 text-center">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-church-green-500 border-t-transparent"></div>
-        <p class="mt-4 text-gray-600">로딩 중...</p>
+      <div v-if="isLoading" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-20 text-center">
+        <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-church-green-500 border-t-transparent"></div>
+        <p class="mt-4 text-gray-500">로딩 중...</p>
       </div>
 
       <!-- 에러 상태 -->
-      <div v-else-if="error" class="bg-white rounded-lg shadow-md p-12 text-center">
-        <p class="text-red-600">{{ error }}</p>
-        <button @click="loadPost" class="mt-4 btn-primary">다시 시도</button>
+      <div v-else-if="error" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-20 text-center">
+        <p class="text-red-500 mb-4">{{ error }}</p>
+        <button @click="loadPost" class="btn-primary">다시 시도</button>
       </div>
 
       <!-- 게시글 상세 -->
-      <div v-else-if="post" class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div v-else-if="post" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <!-- 헤더 -->
-        <div class="border-b px-6 py-4 bg-gray-50">
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{{ decodeHtmlEntities(post.title) }}</h1>
-          <div class="flex flex-wrap items-center text-sm text-gray-600 gap-4">
-            <span>작성자: {{ post.authorName }}</span>
-            <span>|</span>
-            <span>작성일: {{ formatDate(post.publishedAt) }}</span>
-            <span>|</span>
-            <span>조회수: {{ post.viewCount }}</span>
+        <div class="border-b border-gray-100 px-8 py-8 bg-white">
+          <div class="flex items-center gap-2 mb-4 text-sm text-church-green-600 font-bold uppercase tracking-wider">
+            <span>{{ post.categoryName || '게시글' }}</span> <!-- 카테고리가 있다면 표시 -->
+          </div>
+          <h1 class="text-3xl md:text-3xl font-bold text-gray-900 mb-6 leading-tight">{{ decodeHtmlEntities(post.title) }}</h1>
+          <div class="flex flex-wrap items-center text-sm text-gray-500 gap-6 border-t border-gray-50 pt-4">
+            <div class="flex items-center gap-2">
+               <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+               <span>{{ post.authorName }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+               <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+               <span>{{ formatDate(post.publishedAt) }}</span>
+            </div>
+            <div class="flex items-center gap-2 ml-auto">
+               <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+               <span>{{ post.viewCount }}</span>
+            </div>
           </div>
         </div>
 
         <!-- 본문 -->
-        <div class="px-6 py-8">
-          <div class="prose max-w-none" v-html="processedContent"></div>
+        <div class="px-8 py-10 min-h-[300px]">
+          <div class="prose max-w-none text-gray-800 leading-relaxed" v-html="processedContent"></div>
         </div>
 
         <!-- 첨부파일 -->
-        <div v-if="post.attachments && post.attachments.length > 0" class="border-t px-6 py-4 bg-gray-50">
-          <h3 class="font-semibold text-gray-700 mb-3">첨부파일 ({{ post.attachments.length }})</h3>
-          <ul class="space-y-2">
-            <li v-for="file in post.attachments" :key="file.id" class="flex items-center justify-between p-3 bg-white rounded border hover:bg-gray-50">
-              <div class="flex items-center space-x-3">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                </svg>
-                <div>
-                  <p class="font-medium text-gray-800">{{ file.originalName }}</p>
-                  <p class="text-sm text-gray-500">
+        <div v-if="post.attachments && post.attachments.length > 0" class="border-t border-gray-100 px-8 py-6 bg-gray-50/50">
+          <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+            첨부파일 ({{ post.attachments.length }})
+          </h3>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <li v-for="file in post.attachments" :key="file.id" class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-200 hover:border-church-green-400 hover:shadow-sm transition-all group">
+              <div class="flex items-center space-x-3 truncate">
+                <div class="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 group-hover:bg-church-green-50 group-hover:text-church-green-600 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <p class="font-medium text-gray-900 truncate text-sm">{{ file.originalName }}</p>
+                  <p class="text-xs text-gray-500">
                     {{ formatFileSize(file.fileSize) }}
-                    <span v-if="file.imageWidth && file.imageHeight"> · {{ file.imageWidth }}x{{ file.imageHeight }}</span>
                     <span v-if="file.downloadCount > 0"> · {{ file.downloadCount }}회 다운로드</span>
                   </p>
                 </div>
@@ -53,7 +65,7 @@
               <a
                 :href="getFileUrl(file.id)"
                 target="_blank"
-                class="text-church-green-500 hover:text-church-green-600 font-medium text-sm"
+                class="flex-shrink-0 ml-2 px-3 py-1.5 text-xs font-medium text-white bg-gray-800 rounded-lg hover:bg-church-green-600 transition-colors"
               >
                 {{ file.fileType === 'image' ? '보기' : '다운로드' }}
               </a>
@@ -62,8 +74,8 @@
         </div>
 
         <!-- 버튼 -->
-        <div class="border-t px-6 py-4 flex justify-between">
-          <router-link :to="`/board/${boardCode}`" class="btn-secondary">
+        <div class="border-t border-gray-100 px-8 py-6 flex justify-between bg-gray-50">
+          <router-link :to="`/board/${boardCode}`" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">
             목록으로
           </router-link>
         </div>

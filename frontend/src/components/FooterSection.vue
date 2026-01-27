@@ -5,7 +5,7 @@
         <!-- 교회 정보 -->
         <div>
           <h3 class="text-white font-bold text-lg mb-4">에센 한인교회</h3>
-          <p class="text-sm mb-2">Ex.Koreanische Gemeinde in Essen e.V.</p>
+          <p class="text-sm mb-2">Ev. Koreanische Gemeinde in Essen e.V.</p>
           <p class="text-sm mb-2">
             <strong>주소:</strong><br>
             Friedrichstr. 17 45128 Essen, Deutschland
@@ -17,7 +17,7 @@
           <h3 class="text-white font-bold text-lg mb-4">예배 시간</h3>
           <ul class="space-y-2 text-sm">
             <li>주일 대예배: 매주 일요일 오후 3시</li>
-            <li>금요 기도회: 매주 금요일 저녁 7시</li>
+            <li>수요 예배: 매주 수요일 저녁 7시</li>
           </ul>
         </div>
 
@@ -27,10 +27,10 @@
           <p class="text-sm mb-2">
             <strong>이메일:</strong><br>
             <a
-              href="mailto:juheasum@hanmail.net"
+              href="mailto:juheaum@hanmail.net"
               class="text-church-light-400 hover:text-church-light-300 transition-colors"
             >
-              juheasum@hanmail.net
+              juheaum@hanmail.net
             </a>
           </p>
         </div>

@@ -1,28 +1,28 @@
 <template>
-  <div class="bg-gray-50 min-h-screen py-8">
-    <div class="container mx-auto px-4">
-      <!-- 페이지 헤더 -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">교회앨범</h1>
-        <p class="text-gray-600 mt-2">교회 활동 사진을 공유합니다</p>
+  <div class="bg-gray-50 min-h-screen py-12">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <!-- 페이지 헤더 (Clean Style) -->
+      <div class="mb-10 text-center md:text-left">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2 tracking-tight">교회 앨범</h1>
+        <p class="text-lg text-gray-500 font-light">교회 활동 사진을 공유합니다</p>
       </div>
 
       <!-- 로딩 상태 -->
-      <div v-if="isLoading" class="text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-church-green-500 border-t-transparent"></div>
-        <p class="mt-4 text-gray-600">로딩 중...</p>
+      <div v-if="isLoading" class="text-center py-20">
+        <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-church-green-500 border-t-transparent"></div>
+        <p class="mt-4 text-gray-500 font-medium">로딩 중...</p>
       </div>
 
       <!-- 에러 상태 -->
-      <div v-else-if="error" class="bg-white rounded-lg shadow-md p-12 text-center">
-        <p class="text-red-600">{{ error }}</p>
-        <button @click="loadGallery" class="mt-4 btn-primary">다시 시도</button>
+      <div v-else-if="error" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-20 text-center">
+        <p class="text-red-500 mb-4">{{ error }}</p>
+        <button @click="loadGallery" class="btn-primary">다시 시도</button>
       </div>
 
       <!-- 갤러리 그리드 -->
       <div v-else>
-        <div v-if="posts.length === 0" class="bg-white rounded-lg shadow-md p-12 text-center">
-          <p class="text-gray-500">사진이 없습니다.</p>
+        <div v-if="posts.length === 0" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-20 text-center">
+          <p class="text-gray-400">사진이 없습니다.</p>
         </div>
 
         <div v-else>
@@ -31,75 +31,75 @@
               v-for="post in posts"
               :key="post.id"
               :to="`/board/gallery/${post.id}`"
-              class="group bg-white rounded-lg shadow-md overflow-hidden card-hover"
+              class="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
             >
               <!-- 썸네일 이미지 -->
-              <div class="aspect-w-16 aspect-h-12 bg-gray-200 overflow-hidden">
+              <div class="aspect-w-16 aspect-h-12 bg-gray-100 overflow-hidden relative">
                 <img
                   v-if="post.thumbnail"
                   :src="post.thumbnail"
                   :alt="post.title"
-                  class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                  class="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
                 />
-                <div v-else class="w-full h-48 flex items-center justify-center bg-gray-200">
-                  <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div v-else class="w-full h-56 flex items-center justify-center bg-gray-100 text-gray-300">
+                  <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
+                <!-- Overlay Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
 
               <!-- 제목 및 날짜 -->
-              <div class="p-4">
-                <h3 class="font-semibold text-gray-800 truncate group-hover:text-church-green-500 transition-colors">
+              <div class="p-5">
+                <h3 class="font-bold text-gray-900 truncate group-hover:text-church-green-600 transition-colors text-lg mb-2">
                   {{ post.title }}
                 </h3>
-                <p class="text-sm text-gray-500 mt-1">{{ formatDate(post.publishedAt) }}</p>
-                <div class="flex items-center mt-2 text-xs text-gray-400 space-x-3">
-                  <span class="flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    {{ post.viewCount }}
-                  </span>
-                  <span v-if="post.attachmentCount" class="flex items-center">
-                    📎 {{ post.attachmentCount }}
-                  </span>
+                <div class="flex justify-between items-center text-sm text-gray-500">
+                  <span>{{ formatDate(post.publishedAt) }}</span>
+                  <div class="flex items-center space-x-3 text-xs">
+                     <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        {{ post.viewCount }}
+                     </span>
+                  </div>
                 </div>
               </div>
             </router-link>
           </div>
 
-          <!-- 페이지네이션 -->
-          <div v-if="totalPages > 1" class="mt-8 flex justify-center space-x-2">
+          <!-- 페이지네이션 (Modern) -->
+          <div v-if="totalPages > 1" class="mt-12 flex justify-center items-center space-x-2">
             <button
               @click="goToPage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-4 py-2 rounded border bg-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+              class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white text-gray-600 transition-colors shadow-sm"
             >
-              이전
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
 
-            <button
-              v-for="page in displayedPages"
-              :key="page"
-              @click="goToPage(page)"
-              :class="[
-                'px-4 py-2 rounded border',
-                page === currentPage
-                  ? 'bg-church-green-500 text-white'
-                  : 'bg-white hover:bg-gray-100'
-              ]"
-            >
-              {{ page }}
-            </button>
+            <div class="flex space-x-1">
+              <button
+                v-for="page in displayedPages"
+                :key="page"
+                @click="goToPage(page)"
+                class="w-10 h-10 flex items-center justify-center rounded-full text-sm font-bold transition-all"
+                :class="[
+                  page === currentPage
+                    ? 'bg-church-green-600 text-white shadow-md shadow-church-green-200 transform scale-105'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-church-green-200'
+                ]"
+              >
+                {{ page }}
+              </button>
+            </div>
 
             <button
               @click="goToPage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-4 py-2 rounded border bg-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+              class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:hover:bg-white text-gray-600 transition-colors shadow-sm"
             >
-              다음
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
           </div>
         </div>

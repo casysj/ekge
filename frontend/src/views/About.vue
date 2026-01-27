@@ -12,7 +12,7 @@
             매주 40-50명의 성도들이 함께 예배를 드리며 교제하고 있습니다.
           </p>
           <p class="text-gray-700 leading-relaxed mb-6">
-            Ex.Koreanische Gemeinde in Essen e.V.
+            Ev. Koreanische Gemeinde in Essen e.V.
           </p>
 
           <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-3">예배 시간</h3>
@@ -34,7 +34,7 @@
           <div class="bg-gray-50 p-4 rounded-lg">
             <p class="text-gray-700">
               <strong>이메일:</strong>
-              <a href="mailto:juheasum@hanmail.net" class="text-church-green-500 hover:underline">
+              <a href="mailto:juheaum@hanmail.net" class="text-church-green-500 hover:underline">
                 juheasum@hanmail.net
               </a>
             </p>

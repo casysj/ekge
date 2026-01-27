@@ -71,6 +71,18 @@
           >
             🔔 팝업 관리
           </router-link>
+
+          <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-500 uppercase">
+            계정 관리
+          </div>
+
+          <router-link
+            to="/admin/change-password"
+            class="block px-4 py-2 rounded hover:bg-gray-100"
+            :class="{ 'bg-church-green-100 text-church-green-700': $route.path === '/admin/change-password' }"
+          >
+            🔒 비밀번호 변경
+          </router-link>
         </nav>
       </aside>
 
