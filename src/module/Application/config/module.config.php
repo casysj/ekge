@@ -198,6 +198,19 @@ return [
                 ],
             ],
             // 파일 서빙
+            'api-file-thumb' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/api/files/thumb/:id',
+                    'defaults' => [
+                        'controller' => Controller\FileController::class,
+                        'action'     => 'thumbnail',
+                    ],
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                ],
+            ],
             'api-file-serve' => [
                 'type'    => Segment::class,
                 'options' => [

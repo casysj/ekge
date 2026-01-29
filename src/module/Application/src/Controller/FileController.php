@@ -82,6 +82,66 @@ class FileController extends AbstractActionController
     }
 
     /**
+     * 썸네일 서빙
+     * GET /api/files/thumb/:id
+     */
+    public function thumbnailAction()
+    {
+        $id = (int) $this->params()->fromRoute('id');
+        $attachmentRepo = $this->entityManager->getRepository(\Application\Entity\Attachment::class);
+        $attachment = $attachmentRepo->find($id);
+
+        if (!$attachment) {
+            $response = $this->getResponse();
+            $response->setStatusCode(404);
+            $response->setContent('파일을 찾을 수 없습니다.');
+            return $response;
+        }
+
+        // 썸네일 경로 결정
+        $thumbFilePath = null;
+
+        if ($attachment->getThumbnailPath()) {
+            // 새 방식: thumbnailPath 필드 사용
+            $thumbFilePath = $this->uploadPath . '/' . $attachment->getThumbnailPath();
+        } else {
+            // 레거시: t_ 접두사 파일 확인
+            $originalPath = $attachment->getFilePath();
+            $dir = dirname($originalPath);
+            $filename = basename($originalPath);
+            $legacyThumbPath = $this->uploadPath . '/' . $dir . '/t_' . $filename;
+            if (file_exists($legacyThumbPath)) {
+                $thumbFilePath = $legacyThumbPath;
+            }
+        }
+
+        // 썸네일이 없으면 원본 서빙
+        if (!$thumbFilePath || !file_exists($thumbFilePath)) {
+            $thumbFilePath = $this->uploadPath . '/' . $attachment->getFilePath();
+        }
+
+        if (!file_exists($thumbFilePath)) {
+            $response = $this->getResponse();
+            $response->setStatusCode(404);
+            $response->setContent('파일이 존재하지 않습니다.');
+            return $response;
+        }
+
+        $mimeType = mime_content_type($thumbFilePath) ?: 'application/octet-stream';
+
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', $mimeType);
+        $headers->addHeaderLine('Content-Disposition', 'inline; filename="thumb_' . $attachment->getOriginalName() . '"');
+        $headers->addHeaderLine('Content-Length', (string) filesize($thumbFilePath));
+        $headers->addHeaderLine('Cache-Control', 'public, max-age=31536000');
+
+        $response->setContent(file_get_contents($thumbFilePath));
+
+        return $response;
+    }
+
+    /**
      * 파일 경로로 서빙 (레거시 지원용)
      * GET /api/files/path/*
      */

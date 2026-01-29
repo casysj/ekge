@@ -48,6 +48,9 @@ class Attachment
     #[ORM\Column(type: 'integer', name: 'imageHeight', nullable: true, options: ['unsigned' => true])]
     private ?int $imageHeight = null;
 
+    #[ORM\Column(type: 'string', length: 500, name: 'thumbnailPath', nullable: true)]
+    private ?string $thumbnailPath = null;
+
     #[ORM\Column(type: 'integer', name: 'downloadCount', options: ['default' => 0, 'unsigned' => true])]
     private int $downloadCount = 0;
 
@@ -165,6 +168,17 @@ class Attachment
     public function setImageHeight(?int $imageHeight): self
     {
         $this->imageHeight = $imageHeight;
+        return $this;
+    }
+
+    public function getThumbnailPath(): ?string
+    {
+        return $this->thumbnailPath;
+    }
+
+    public function setThumbnailPath(?string $thumbnailPath): self
+    {
+        $this->thumbnailPath = $thumbnailPath;
         return $this;
     }
 

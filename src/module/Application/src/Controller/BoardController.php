@@ -53,7 +53,7 @@ class BoardController extends AbstractActionController
     {
         $boardCode = $this->params()->fromRoute('code');
         $page = (int) $this->params()->fromQuery('page', 1);
-        $limit = (int) $this->params()->fromQuery('limit', 0); // 0 = 기본값 사용
+        $limit = (int) $this->params()->fromQuery('limit', 0) ?: null; // 0 = 기본값 사용
         $keyword = $this->params()->fromQuery('keyword', '');
 
         $board = $this->boardService->getBoardByCode($boardCode);
@@ -81,6 +81,15 @@ class BoardController extends AbstractActionController
                 'type' => $board->getBoardType(),
             ],
             'posts' => array_map(function($post) {
+                // 첫 번째 이미지 첨부파일에서 썸네일 URL 추출
+                $thumbnail = null;
+                foreach ($post->getAttachments() as $attachment) {
+                    if ($attachment->isImage()) {
+                        $thumbnail = '/api/files/thumb/' . $attachment->getId();
+                        break;
+                    }
+                }
+
                 return [
                     'id' => $post->getId(),
                     'title' => $post->getTitle(),
@@ -89,6 +98,7 @@ class BoardController extends AbstractActionController
                     'isNotice' => $post->isNotice(),
                     'publishedAt' => $post->getPublishedAt()?->format('Y-m-d H:i:s'),
                     'hasAttachments' => count($post->getAttachments()) > 0,
+                    'thumbnail' => $thumbnail,
                     'board' => [
                         'id' => $post->getBoard()->getId(),
                         'code' => $post->getBoard()->getBoardCode(),

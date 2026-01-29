@@ -110,8 +110,12 @@ class FileUploadService
                 $attachment->setImageWidth($imageInfo[0])
                           ->setImageHeight($imageInfo[1]);
 
-                // 썸네일 생성 (선택사항)
-                // $this->createThumbnail($filePath, $uploadDir . '/thumb_' . $savedName);
+                // 썸네일 생성
+                $thumbName = 'thumb_' . $savedName;
+                $thumbPath = $uploadDir . '/' . $thumbName;
+                if ($this->createThumbnail($filePath, $thumbPath)) {
+                    $attachment->setThumbnailPath($yearMonth . '/' . $thumbName);
+                }
             }
         }
 
